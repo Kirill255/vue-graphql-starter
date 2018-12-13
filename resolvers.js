@@ -3,6 +3,19 @@ module.exports = {
     getUser: () => null
   },
   Mutation: {
+    addPost: async (_, { title, imageUrl, categories, description, createdBy }, { Post }) => {
+      const newPost = await new Post({
+        title,
+        imageUrl,
+        categories,
+        description,
+        createdBy
+      });
+
+      newPost.save();
+
+      return newPost;
+    },
     signupUser: async (_, { username, email, password }, { User }) => { // async (root, args, context)
       const user = await User.findOne({ username });
 

@@ -50,3 +50,14 @@ server.listen().then(({ url }) => {
 //     joinDate
 //   }
 // }
+
+// mutation{
+//   addPost(title: "Mona lisa", imageUrl: "google.com", categories: ["Art"], description: "A painting", createdBy: "5c12771f794ec50a188b5b9d") {
+//     title
+//     imageUrl
+//     categories
+//     description
+//     createDate
+//     likes
+//   }
+// }
