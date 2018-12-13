@@ -1,9 +1,19 @@
+require("dotenv").config();
 const { ApolloServer, gql } = require("apollo-server");
+const mongoose = require("mongoose");
 
-const todos = [
-  { task: "Wash car", completed: false },
-  { task: "Clean room", completed: true }
-];
+const User = require("./models/User");
+const Post = require("./models/Post");
+
+mongoose.Promise = global.Promise;
+mongoose.set("useCreateIndex", true);
+
+mongoose.connect(process.env.DB_URL, {
+  useNewUrlParser: true,
+  reconnectTries: Number.MAX_VALUE
+})
+  .then(() => console.log("DB connected!"))
+  .catch((err) => console.log("DB error connection: ", err));
 
 const typeDefs = gql`
   type Todo {
@@ -14,71 +24,17 @@ const typeDefs = gql`
   type Query {
     getTodos: [Todo]
   }
-
-  type Mutation {
-    addTodo(task: String, completed: Boolean): Todo
-  }
 `;
-
-const resolvers = {
-  Query: {
-    getTodos: () => todos
-  },
-  Mutation: {
-    // addTodo: (_, args) => {
-    //   const todo = { task: args.task, completed: args.completed };
-    //   todos.push(todo);
-    //   return todo;
-    // }
-
-    // rewrite
-    addTodo: (_, { task, completed }) => {
-      const todo = { task, completed };
-      todos.push(todo);
-      return todo;
-    }
-  }
-};
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  context: {
+    User,
+    Post
+  }
 });
 
 // default port 4000
 server.listen().then(({ url }) => {
   console.log(`Server listening on ${url}`);
 });
-
-// change port
-// server.listen(4500).then(({ url }) => {
-//   console.log(`Server listening on ${url}`);
-// });
-
-// -------------------------------------------------
-// query example
-
-// query{
-//   getTodos{
-//     task
-//     completed
-//   }
-// }
-
-// or without keyword query
-
-// {
-//   getTodos{
-//     task
-//     completed
-//   }
-// }
-
-// mutation example
-
-// mutation{
-//   addTodo(task: "Eat lunch", completed: false) {
-//     task
-//     completed
-//   }
-// }
