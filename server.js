@@ -39,6 +39,25 @@ server.listen().then(({ url }) => {
 });
 
 // query example
+
+// query{
+//   getPosts {
+//     title
+//     imageUrl
+//     categories
+//     description
+//     createDate
+//     likes
+//     createdBy {
+//       _id
+//       username
+//       email
+//       password
+//       joinDate
+//     }
+//   }
+// }
+
 // mutation example
 
 // mutation{
