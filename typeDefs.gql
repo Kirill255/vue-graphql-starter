@@ -1,0 +1,30 @@
+# file name can be typeDefs.graphql or just typeDefs.gql
+# username: String! @unique — type string, ! - required, @unique - unique
+
+type User {
+  _id: ID
+  username: String! @unique
+  email: String! @unique
+  password: String!
+  avatar: String
+  joinDate: String
+  favorites: [Post]
+}
+
+type Post {
+  title: String!
+  imageUrl: String!
+  categories: [String]!
+  description: String!
+  createDate: String
+  likes: Int
+  createdBy: User!
+  messages: [Message]
+}
+
+type Message {
+  _id: ID
+  messageBody: String!
+  messageDate: String
+  messageUser: User!
+}

@@ -1,5 +1,12 @@
 require("dotenv").config();
-const { ApolloServer, gql } = require("apollo-server");
+
+const fs = require("fs");
+const path = require("path");
+
+const filePath = path.join(__dirname, "typeDegs.gql");
+const typeDefs = fs.readFileSync(filePath, "utf-8");
+
+const { ApolloServer } = require("apollo-server");
 const mongoose = require("mongoose");
 
 const User = require("./models/User");
@@ -14,17 +21,6 @@ mongoose.connect(process.env.DB_URL, {
 })
   .then(() => console.log("DB connected!"))
   .catch((err) => console.log("DB error connection: ", err));
-
-const typeDefs = gql`
-  type Todo {
-    task: String
-    completed: Boolean
-  }
-
-  type Query {
-    getTodos: [Todo]
-  }
-`;
 
 const server = new ApolloServer({
   typeDefs,
