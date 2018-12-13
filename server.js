@@ -3,8 +3,10 @@ require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 
-const filePath = path.join(__dirname, "typeDegs.gql");
+const filePath = path.join(__dirname, "typeDefs.gql");
 const typeDefs = fs.readFileSync(filePath, "utf-8");
+
+const resolvers = require("./resolvers");
 
 const { ApolloServer } = require("apollo-server");
 const mongoose = require("mongoose");
@@ -24,6 +26,7 @@ mongoose.connect(process.env.DB_URL, {
 
 const server = new ApolloServer({
   typeDefs,
+  resolvers,
   context: {
     User,
     Post
@@ -34,3 +37,16 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`Server listening on ${url}`);
 });
+
+// query example
+// mutation example
+
+// mutation{
+//   signupUser(username: "John", email: "john@mail.ru", password: "john") {
+//     username
+//     email
+//     password
+//     avatar
+//     joinDate
+//   }
+// }
