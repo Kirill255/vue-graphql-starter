@@ -8,6 +8,11 @@ module.exports = {
     '@vue/standard'
   ],
   rules: {
+    "space-before-function-paren": ["error", {
+      "anonymous": "never",
+      "named": "never",
+      "asyncArrow": "always"
+    }],
     "no-extra-semi": "error",
     "semi": [
       "error",
