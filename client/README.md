@@ -34,3 +34,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 https://akryum.github.io/vue-apollo/guide/installation.html#manual-installation
 
 `npm install --save vue-apollo graphql apollo-boost`
+
+#### Smart Query
+
+https://akryum.github.io/vue-apollo/api/smart-query.html#smart-query
