@@ -5,9 +5,25 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
+import ApolloClient from "apollo-boost";
+import VueApollo from "vue-apollo";
+
+Vue.use(VueApollo);
+
+const defaultClient = new ApolloClient({
+  // You should use an absolute URL here
+  uri: "http://localhost:4000/graphql"
+});
+
+const apolloProvider = new VueApollo({
+  defaultClient // es6, defaultClient: defaultClient
+});
+
 Vue.config.productionTip = false;
 
 new Vue({
+  // provide: apolloProvider.provide(),
+  apolloProvider, // provide: apolloProvider.provide()
   router,
   store,
   render: h => h(App)

@@ -27,3 +27,10 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+### Installation Apollo Client
+
+https://akryum.github.io/vue-apollo/guide/installation.html#manual-installation
+
+`npm install --save vue-apollo graphql apollo-boost`
