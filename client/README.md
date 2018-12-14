@@ -38,3 +38,9 @@ https://akryum.github.io/vue-apollo/guide/installation.html#manual-installation
 #### Smart Query
 
 https://akryum.github.io/vue-apollo/api/smart-query.html#smart-query
+
+#### ApolloQuery component
+
+https://akryum.github.io/vue-apollo/guide/components/query.html#apolloquery
+
+https://akryum.github.io/vue-apollo/api/apollo-query.html#apolloquery-component

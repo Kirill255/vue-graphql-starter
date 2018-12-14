@@ -1,18 +1,36 @@
 <template>
   <v-container>
     <h1>Home</h1>
-    <div v-if="$apollo.loading">Loading...</div>
-    <div v-else>
-      <ul>
-        <li v-for="post in getPosts"
-            :key="post._id">
-          <p>{{ post.title }}</p>
-          <p>{{ post.imageUrl }}</p>
-          <p>{{ post.description }}</p>
-          <p>{{ post.likes }}</p>
-        </li>
-      </ul>
-    </div>
+
+    <ApolloQuery :query="getPostsQuery">
+
+      <template slot-scope="{ result: { loading, error, data } }">
+        <!-- Loading -->
+        <div v-if="loading">Loading...</div>
+
+        <!-- Error -->
+        <div v-else-if="error">An error occured. {{error.message}}</div>
+
+        <!-- Result -->
+        <div v-else-if="data">
+          <ul>
+            <li v-for="post in data.getPosts"
+                :key="post._id">
+              <p>{{ post.title }}</p>
+              <p>{{ post.imageUrl }}</p>
+              <p>{{ post.description }}</p>
+              <p>{{ post.likes }}</p>
+            </li>
+          </ul>
+        </div>
+
+        <!-- No result -->
+        <div v-else>No result :(</div>
+
+      </template>
+
+    </ApolloQuery>
+
   </v-container>
 </template>
 
@@ -29,12 +47,7 @@ export default {
   },
   data() {
     return {
-      posts: []
-    };
-  },
-  apollo: {
-    getPosts: {
-      query: gql`
+      getPostsQuery: gql`
         query {
           getPosts {
             _id
@@ -44,20 +57,8 @@ export default {
             likes
           }
         }
-      `,
-      // result(args) { console.dir(args) }
-      result({ data, loading, networkStatus }) {
-        if (!loading) {
-          this.posts = data.getPosts;
-          // networkStatus: 7 -ok, 8 - err
-          console.log("networkStatus: ", networkStatus);
-        }
-      },
-      error(err) {
-        console.error("We've got an error!", err);
-        console.dir(err);
-      }
-    }
+      `
+    };
   }
 };
 </script>
