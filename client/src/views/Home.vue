@@ -1,15 +1,27 @@
 <template>
-  <v-container v-if="getPosts"
-               text-xs-center>
-    <v-layout row>
+  <v-container text-xs-center>
+
+    <v-layout v-if="!loading"
+              row>
       <v-flex xs12>
-        <v-carousel>
-          <v-carousel-item v-for="post in getPosts"
+        <v-carousel v-if="posts.length">
+          <v-carousel-item v-for="post in posts"
                            :key="post._id"
                            :src="post.imageUrl">
             <h1 id="carousel__title">{{post.title}}</h1>
           </v-carousel-item>
         </v-carousel>
+      </v-flex>
+    </v-layout>
+
+    <v-layout v-else
+              row>
+      <v-flex xs12
+              class="pt-5">
+        <v-progress-circular indeterminate
+                             :size="100"
+                             :width="7"
+                             color="purple"></v-progress-circular>
       </v-flex>
     </v-layout>
 
@@ -20,7 +32,7 @@
 // @ is an alias to /src
 // import HelloWorld from "@/components/HelloWorld.vue";
 
-import { gql } from "apollo-boost";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Home",
@@ -30,20 +42,16 @@ export default {
   data() {
     return {};
   },
-  apollo: {
-    getPosts: {
-      query: gql`
-        query {
-          getPosts {
-            _id
-            title
-            imageUrl
-            description
-            likes
-          }
-        }
-      `
+  computed: {
+    ...mapGetters(["posts", "loading"])
+  },
+  methods: {
+    handleGetCarouselPosts() {
+      this.$store.dispatch("getPosts");
     }
+  },
+  created() {
+    this.handleGetCarouselPosts();
   }
 };
 </script>
