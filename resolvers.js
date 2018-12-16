@@ -1,17 +1,19 @@
 module.exports = {
   Query: {
     getPosts: async (_, args, { Post }) => {
-      const posts = await Post.find({}).sort({ createDate: "desc" }).populate({
-        path: "createdBy", // property "createdBy" in PostSchema
-        model: "User" // ref in property "createdBy" in PostSchema
-      });
+      const posts = await Post.find({})
+        .sort({ createDate: "desc" })
+        .populate({
+          path: "createdBy", // property "createdBy" in PostSchema
+          model: "User" // ref in property "createdBy" in PostSchema
+        });
 
       return posts;
     }
   },
   Mutation: {
     addPost: async (_, { title, imageUrl, categories, description, createdBy }, { Post }) => {
-      const newPost = await new Post({
+      const newPost = new Post({
         title,
         imageUrl,
         categories,
@@ -19,24 +21,25 @@ module.exports = {
         createdBy
       });
 
-      newPost.save();
+      await newPost.save();
 
       return newPost;
     },
-    signupUser: async (_, { username, email, password }, { User }) => { // async (root, args, context)
+    // signupUser: async (root, args, context)
+    signupUser: async (_, { username, email, password }, { User }) => {
       const user = await User.findOne({ username });
 
       if (user) {
         throw new Error("User already exists!");
       }
 
-      const newUser = await new User({
+      const newUser = new User({
         username,
         email,
         password
       });
 
-      newUser.save();
+      await newUser.save();
 
       return newUser;
     }
