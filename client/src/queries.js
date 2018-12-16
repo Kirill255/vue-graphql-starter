@@ -12,6 +12,26 @@ export const GET_POSTS = gql`
   }
 `;
 
+// user queries
+
+export const GET_CURRENT_USER = gql`
+  query {
+    getCurrentUser {
+      _id
+      username
+      email
+      password
+      avatar
+      joinDate
+      favorites {
+        _id
+        title
+        imageUrl
+      }
+    }
+  }
+`;
+
 // user mutations
 export const SIGIN_USER = gql`
   mutation($username: String!, $password: String!) {

@@ -98,8 +98,16 @@ export default {
       ]
     };
   },
+  watch: {
+    user(value) {
+      // if user values changes, redirect to homepage
+      if (value) {
+        this.$router.push("/");
+      }
+    }
+  },
   computed: {
-    ...mapGetters(["loading"])
+    ...mapGetters(["user", "loading"])
   },
   methods: {
     handleSigninUser() {
