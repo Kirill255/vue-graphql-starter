@@ -11,6 +11,17 @@
       </v-flex>
     </v-layout>
 
+    <!-- Error alert -->
+    <v-layout v-if="error"
+              row
+              wrap>
+      <v-flex xs12
+              sm6
+              offset-sm3>
+        <form-alert :message="error.message"></form-alert>
+      </v-flex>
+    </v-layout>
+
     <!-- Form -->
     <v-layout row
               wrap>
@@ -107,7 +118,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["user", "loading"])
+    ...mapGetters(["user", "loading", "error"])
   },
   methods: {
     handleSigninUser() {

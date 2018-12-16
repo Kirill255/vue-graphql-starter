@@ -11,12 +11,14 @@ export default new Vuex.Store({
   state: {
     user: null,
     posts: [],
-    loading: false
+    loading: false,
+    error: null
   },
   getters: {
     user: state => state.user,
     posts: state => state.posts,
-    loading: state => state.loading
+    loading: state => state.loading,
+    error: state => state.error
   },
   mutations: {
     setUser: (state, payload) => {
@@ -28,6 +30,10 @@ export default new Vuex.Store({
     setLoading: (state, payload) => {
       state.loading = payload;
     },
+    setError: (state, payload) => {
+      state.error = payload;
+    },
+    clearError: state => (state.error = null),
     clearUser: state => (state.user = null)
   },
   actions: {
@@ -68,6 +74,7 @@ export default new Vuex.Store({
     },
 
     signinUser: ({ commit }, payload) => {
+      commit("clearError");
       commit("setLoading", true);
 
       // clear token to prevent errors
@@ -86,6 +93,7 @@ export default new Vuex.Store({
           router.go();
         })
         .catch(err => {
+          commit("setError", err);
           commit("setLoading", false);
           console.error(err);
         });
