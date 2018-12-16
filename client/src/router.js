@@ -2,6 +2,8 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 
+import AuthGuard from "./AuthGuard";
+
 Vue.use(Router);
 
 export default new Router({
@@ -34,17 +36,20 @@ export default new Router({
     {
       path: "/profile",
       name: "profile",
-      component: () => import(/* webpackChunkName: "profile" */ "./views/Auth/Profile.vue")
+      component: () => import(/* webpackChunkName: "profile" */ "./views/Auth/Profile.vue"),
+      beforeEnter: AuthGuard
     },
     {
       path: "/posts",
       name: "posts",
-      component: () => import(/* webpackChunkName: "posts" */ "./views/Posts/Posts.vue")
+      component: () => import(/* webpackChunkName: "posts" */ "./views/Posts/Posts.vue"),
+      beforeEnter: AuthGuard
     },
     {
       path: "/post/add",
       name: "addPost",
-      component: () => import(/* webpackChunkName: "addPost" */ "./views/Posts/AddPost.vue")
+      component: () => import(/* webpackChunkName: "addPost" */ "./views/Posts/AddPost.vue"),
+      beforeEnter: AuthGuard
     }
   ]
 });

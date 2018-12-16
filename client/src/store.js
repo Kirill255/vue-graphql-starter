@@ -70,6 +70,9 @@ export default new Vuex.Store({
     signinUser: ({ commit }, payload) => {
       commit("setLoading", true);
 
+      // clear token to prevent errors
+      localStorage.setItem("token", "");
+
       apolloClient
         .mutate({
           mutation: SIGIN_USER,
