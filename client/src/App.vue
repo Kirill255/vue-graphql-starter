@@ -48,7 +48,7 @@
         </v-list-tile>
 
         <v-list-tile v-if="user"
-                     @click="onLogout">
+                     @click="handleSignoutUser">
           <v-list-tile-action>
             <v-icon>exit_to_app</v-icon>
           </v-list-tile-action>
@@ -107,7 +107,7 @@
         </v-btn>
 
         <v-btn v-if="user"
-               @click="onLogout"
+               @click="handleSignoutUser"
                flat>
           <v-icon left>exit_to_app</v-icon>
           Logout
@@ -157,8 +157,8 @@ export default {
     toggleSideNav() {
       this.drawer = !this.drawer;
     },
-    onLogout() {
-      console.log(1);
+    handleSignoutUser() {
+      this.$store.dispatch("signoutUser");
     }
   }
 };
