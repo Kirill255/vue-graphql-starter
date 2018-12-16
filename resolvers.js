@@ -1,4 +1,11 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const createToken = (user, secret, expiresIn) => {
+  // return jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: expiresIn })
+  const { username, email } = user;
+  return jwt.sign({ username, email }, secret, { expiresIn });
+};
 
 module.exports = {
   Query: {
@@ -43,7 +50,8 @@ module.exports = {
 
       await newUser.save();
 
-      return newUser;
+      // token
+      return { token: createToken(newUser, process.env.SECRET, "1h") };
     },
     signinUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username });
@@ -58,8 +66,8 @@ module.exports = {
         throw new Error("Invalid username or password!");
       }
 
-      // login
-      return user;
+      // token
+      return { token: createToken(user, process.env.SECRET, "1h") };
     }
   }
 };

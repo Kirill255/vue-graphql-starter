@@ -95,3 +95,15 @@ server.listen().then(({ url }) => {
 //     joinDate
 //   }
 // }
+
+// mutation{
+//   signupUser(username: "Jeff", email: "jeff@mail.ru", password: "jeff") {
+//     token
+//   }
+// }
+
+// mutation{
+//   signinUser(username: "Jeff", password: "jeff") {
+//     token
+//   }
+// }
