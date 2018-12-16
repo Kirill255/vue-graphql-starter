@@ -22,6 +22,7 @@
 
       <!-- Side Navbar Links -->
       <v-list>
+
         <v-list-tile ripple
                      v-for="item in navItems"
                      :key="item.title"
@@ -34,8 +35,28 @@
           <v-list-tile-content>
             {{item.title}}
           </v-list-tile-content>
-
         </v-list-tile>
+
+        <v-list-tile v-if="user"
+                     to="/profile">
+          <v-list-tile-action>
+            <v-icon>account_box</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title v-text="'Profile'"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile v-if="user"
+                     @click="onLogout">
+          <v-list-tile-action>
+            <v-icon>exit_to_app</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title v-text="'Logout'"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
       </v-list>
 
     </v-navigation-drawer>
@@ -73,6 +94,24 @@
           <v-icon left>{{item.icon}}</v-icon>
           {{item.title}}
         </v-btn>
+
+        <v-btn v-if="user"
+               to="/profile"
+               flat>
+          <v-icon left>account_box</v-icon>
+          <v-badge right
+                   color="blue darken-2">
+            <span slot="badge">1</span>
+            Profile
+          </v-badge>
+        </v-btn>
+
+        <v-btn v-if="user"
+               @click="onLogout"
+               flat>
+          <v-icon left>exit_to_app</v-icon>
+          Logout
+        </v-btn>
       </v-toolbar-items>
 
     </v-toolbar>
@@ -90,6 +129,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "App",
   data() {
@@ -98,9 +139,15 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["user"]),
     navItems() {
+      if (this.user) {
+        return [
+          { icon: "chat", title: "Posts", link: "/posts" },
+          { icon: "stars", title: "Create Post", link: "/post/add" }
+        ];
+      }
       return [
-        { icon: "chat", title: "Posts", link: "/posts" },
         { icon: "lock_open", title: "Sign In", link: "/signin" },
         { icon: "create", title: "Sign Up", link: "/signup" }
       ];
@@ -109,6 +156,9 @@ export default {
   methods: {
     toggleSideNav() {
       this.drawer = !this.drawer;
+    },
+    onLogout() {
+      console.log(1);
     }
   }
 };
