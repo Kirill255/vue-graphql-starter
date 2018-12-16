@@ -17,12 +17,16 @@ const Post = require("./models/Post");
 mongoose.Promise = global.Promise;
 mongoose.set("useCreateIndex", true);
 
-mongoose.connect(process.env.DB_URL, {
-  useNewUrlParser: true,
-  reconnectTries: Number.MAX_VALUE
-})
+mongoose
+  .connect(
+    process.env.DB_URL,
+    {
+      useNewUrlParser: true,
+      reconnectTries: Number.MAX_VALUE
+    }
+  )
   .then(() => console.log("DB connected!"))
-  .catch((err) => console.log("DB error connection: ", err));
+  .catch(err => console.log("DB error connection: ", err));
 
 const server = new ApolloServer({
   typeDefs,
@@ -78,5 +82,16 @@ server.listen().then(({ url }) => {
 //     description
 //     createDate
 //     likes
+//   }
+// }
+
+// mutation{
+//   signinUser(username: "Jack", password: "jack") {
+//     _id
+//     username
+//     email
+//     password
+//     avatar
+//     joinDate
 //   }
 // }
