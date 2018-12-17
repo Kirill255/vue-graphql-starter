@@ -42,8 +42,8 @@ export default new Router({
     {
       path: "/posts",
       name: "posts",
-      component: () => import(/* webpackChunkName: "posts" */ "./views/Posts/Posts.vue"),
-      beforeEnter: AuthGuard
+      component: () => import(/* webpackChunkName: "posts" */ "./views/Posts/Posts.vue")
+      // beforeEnter: AuthGuard
     },
     {
       path: "/post/add",

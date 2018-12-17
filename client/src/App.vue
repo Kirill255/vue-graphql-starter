@@ -123,19 +123,32 @@
           <router-view />
         </transition>
 
-        <!-- Auth snackbar -->
-        <v-snackbar v-model="snackbar"
+        <!-- Auth Snackbar -->
+        <v-snackbar v-model="authSnackbar"
                     color="success"
+                    :timeout="5000"
                     bottom
-                    left
-                    :timeout="5000">
+                    left>
           <v-icon class="mr-3">check_circle</v-icon>
           <h3>You are now signed in!</h3>
           <v-btn dark
                  flat
-                 @click="snackbar = false">
-            Close
-          </v-btn>
+                 @click="authSnackbar = false">Close</v-btn>
+        </v-snackbar>
+
+        <!-- Auth Error Snackbar -->
+        <v-snackbar v-if="authError"
+                    v-model="authErrorSnackbar"
+                    color="info"
+                    :timeout="5000"
+                    bottom
+                    left>
+          <v-icon class="mr-3">cancel</v-icon>
+          <h3>{{authError.message}}</h3>
+          <v-btn dark
+                 flat
+                 to="/signin"
+                 @click="authErrorSnackbar = false">Signin</v-btn>
         </v-snackbar>
       </main>
     </v-content>
@@ -151,18 +164,24 @@ export default {
   data() {
     return {
       drawer: false,
-      snackbar: false
+      authSnackbar: false,
+      authErrorSnackbar: false
     };
   },
   watch: {
     user(newValue, oldValue) {
       if (oldValue === null) {
-        this.snackbar = true;
+        this.authSnackbar = true;
+      }
+    },
+    authError(value) {
+      if (value !== null) {
+        this.authErrorSnackbar = true;
       }
     }
   },
   computed: {
-    ...mapGetters(["user"]),
+    ...mapGetters(["user", "authError"]),
     navItems() {
       if (this.user) {
         return [
