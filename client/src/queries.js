@@ -33,7 +33,7 @@ export const GET_CURRENT_USER = gql`
 `;
 
 // user mutations
-export const SIGIN_USER = gql`
+export const SIGNIN_USER = gql`
   mutation($username: String!, $password: String!) {
     signinUser(username: $username, password: $password) {
       token
