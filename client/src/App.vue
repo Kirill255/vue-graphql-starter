@@ -100,8 +100,10 @@
                flat>
           <v-icon left>account_box</v-icon>
           <v-badge right
-                   color="blue darken-2">
-            <span slot="badge">1</span>
+                   color="blue darken-2"
+                   :class="{'bounce': badgeAnimated}">
+            <span v-if="userFavorites.length"
+                  slot="badge">{{userFavorites.length}}</span>
             Profile
           </v-badge>
         </v-btn>
@@ -165,7 +167,8 @@ export default {
     return {
       drawer: false,
       authSnackbar: false,
-      authErrorSnackbar: false
+      authErrorSnackbar: false,
+      badgeAnimated: false
     };
   },
   watch: {
@@ -178,10 +181,17 @@ export default {
       if (value !== null) {
         this.authErrorSnackbar = true;
       }
+    },
+    userFavorites(value) {
+      // if user favorites value changed at all
+      if (value) {
+        this.badgeAnimated = true;
+        setTimeout(() => (this.badgeAnimated = false), 1000);
+      }
     }
   },
   computed: {
-    ...mapGetters(["user", "authError"]),
+    ...mapGetters(["user", "userFavorites", "authError"]),
     navItems() {
       if (this.user) {
         return [
@@ -220,5 +230,30 @@ export default {
 .fade-enter,
 .fade-leave-active {
   opacity: 0;
+}
+
+/* user favorite badge animation */
+.bounce {
+  animation: bounce 1s both;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%,
+  43% {
+    transform: translate3d(0, -20px, 0);
+  }
+  70% {
+    transform: translate3d(0, -10px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
 }
 </style>

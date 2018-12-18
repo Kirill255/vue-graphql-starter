@@ -101,6 +101,42 @@ module.exports = {
 
       return post.messages[0];
     },
+    likePost: async (_, { postId, username }, { Post, User }) => {
+      // find post and add +1 to it's "like" value
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $inc: { likes: 1 } },
+        { new: true }
+      );
+      // find user and add id of post to it's favorites array (witch will be populated as Posts)
+      const user = await User.findOneAndUpdate(
+        { username },
+        { $addToSet: { favorites: postId } },
+        { new: true }
+      ).populate({
+        path: "favorites",
+        model: "Post"
+      });
+      // return only likes from "post" and favorites from "user"
+      return { likes: post.likes, favorites: user.favorites };
+    },
+    // does the opposite of above, inc with -1 and pull instead of addToSet
+    unlikePost: async (_, { postId, username }, { Post, User }) => {
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $inc: { likes: -1 } },
+        { new: true }
+      );
+      const user = await User.findOneAndUpdate(
+        { username },
+        { $pull: { favorites: postId } },
+        { new: true }
+      ).populate({
+        path: "favorites",
+        model: "Post"
+      });
+      return { likes: post.likes, favorites: user.favorites };
+    },
     // signupUser: async (root, args, context)
     signupUser: async (_, { username, email, password }, { User }) => {
       const user = await User.findOne({ username });
