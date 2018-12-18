@@ -10,7 +10,8 @@
               sm6
               v-for="post in infiniteScrollPosts.posts"
               :key="post._id">
-        <v-card hover>
+        <v-card hover
+                @click.native="goToPost(post._id)">
           <v-img :src="post.imageUrl"
                  :lazy-src="post.imageUrl"
                  height="30vh"
@@ -127,6 +128,9 @@ export default {
       //   this.showMoreEnabled = data.infiniteScrollPosts.hasMore;
       // })
       // .catch(error => console.error(error));
+    },
+    goToPost(postId) {
+      this.$router.push(`/posts/${postId}`);
     }
   }
 };
