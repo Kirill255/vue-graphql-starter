@@ -10,9 +10,9 @@
               sm6
               v-for="post in infiniteScrollPosts.posts"
               :key="post._id">
-        <v-card hover
-                @click.native="goToPost(post._id)">
-          <v-img :src="post.imageUrl"
+        <v-card hover>
+          <v-img @click.native="goToPost(post._id)"
+                 :src="post.imageUrl"
                  :lazy-src="post.imageUrl"
                  height="30vh"
                  lazy></v-img>

@@ -55,19 +55,94 @@
       </v-flex>
     </v-layout>
 
+    <!-- Messages Section -->
+    <div class="mt-3">
+      <!-- Message Input -->
+      <v-layout v-if="user"
+                class="mb-3">
+        <v-flex xs12>
+          <v-form @submit.prevent="handleAddPostMessage"
+                  ref="form"
+                  lazy-validation
+                  v-model="isFormValid">
+            <v-layout row>
+              <v-flex xs12>
+                <v-text-field @click:append-outer="handleAddPostMessage"
+                              :append-outer-icon="messageBody && 'send'"
+                              prepend-icon="email"
+                              type="text"
+                              label="Add Message"
+                              :rules="messageRules"
+                              v-model="messageBody"
+                              clearable
+                              required></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-form>
+        </v-flex>
+      </v-layout>
+
+      <!-- Messages -->
+      <v-layout row
+                wrap>
+        <v-flex xs12>
+          <v-list two-line
+                  subheader>
+            <v-subheader>Messages ({{getPost.messages.length}})</v-subheader>
+
+            <template v-for="message in getPost.messages">
+              <v-divider :key="message._id"></v-divider>
+
+              <v-list-tile avatar
+                           inset
+                           :key="message.title">
+                <v-list-tile-avatar>
+                  <img :src="message.messageUser.avatar">
+                </v-list-tile-avatar>
+
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    {{message.messageBody}}
+                  </v-list-tile-title>
+                  <v-list-tile-sub-title>
+                    {{message.messageUser.username}}
+                    <span class="grey--text text--lighten-1 hidden-xs-only">{{message.messageDate}}</span>
+                  </v-list-tile-sub-title>
+                </v-list-tile-content>
+
+                <v-list-tile-action class='hidden-xs-only'>
+                  <v-icon :color="checkIfOwnMessage(message) ? 'accent' : 'grey'">chat_bubble</v-icon>
+                </v-list-tile-action>
+
+              </v-list-tile>
+            </template>
+          </v-list>
+        </v-flex>
+      </v-layout>
+
+    </div>
+
   </v-container>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import { GET_POST } from "../../queries";
+import { GET_POST, ADD_POST_MESSAGE } from "../../queries";
 
 export default {
   name: "Post",
   props: ["postId"],
   data() {
     return {
-      dialog: false
+      isFormValid: false,
+      dialog: false,
+      messageBody: "",
+      messageRules: [
+        message => !!message || "Message is required",
+        message =>
+          (message && message.length < 100) ||
+          "Message must be less than 100 characters"
+      ]
     };
   },
   apollo: {
@@ -91,6 +166,50 @@ export default {
     },
     goToPreviousPage() {
       this.$router.go(-1);
+    },
+    handleAddPostMessage() {
+      if (this.$refs.form.validate()) {
+        const variables = {
+          messageBody: this.messageBody,
+          userId: this.user._id,
+          postId: this.postId
+        };
+
+        this.$apollo
+          .mutate({
+            mutation: ADD_POST_MESSAGE,
+            variables,
+            update: (cache, { data: { addPostMessage } }) => {
+              const data = cache.readQuery({
+                query: GET_POST,
+                variables: {
+                  postId: this.postId
+                }
+              });
+
+              // console.log("from update: ", data);
+              // console.log("from update: ", data.addPostMessage);
+
+              data.getPost.messages.unshift(addPostMessage);
+
+              cache.writeQuery({
+                query: GET_POST,
+                variables: {
+                  postId: this.postId
+                },
+                data
+              });
+            }
+          })
+          .then(({ data }) => {
+            // console.log(data.addPostMessage);
+            this.$refs.form.reset();
+          })
+          .catch(err => console.error(err));
+      }
+    },
+    checkIfOwnMessage(message) {
+      return this.user && this.user._id === message.messageUser._id;
     }
   }
 };
