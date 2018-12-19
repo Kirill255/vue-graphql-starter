@@ -16,7 +16,9 @@ Vue.use(VueApollo);
 
 export const defaultClient = new ApolloClient({
   // You should use an absolute URL here
-  uri: "http://localhost:4000/graphql",
+  // uri: "http://localhost:4000/graphql",
+  // deploy to "now" https://zeit.co/now
+  uri: "https://fullstack-vue-graphql-starter-jwhxjdepzv.now.sh/graphql",
 
   // include auth token with requests made to backend
   fetchOptions: {
