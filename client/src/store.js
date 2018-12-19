@@ -10,7 +10,10 @@ import {
   GET_POSTS,
   ADD_POST,
   INFINITE_SCROLL_POSTS,
-  SEARCH_POSTS
+  SEARCH_POSTS,
+  GET_USER_POSTS,
+  UPDATE_USER_POST,
+  DELETE_USER_POST
 } from "./queries";
 
 Vue.use(Vuex);
@@ -19,6 +22,7 @@ export default new Vuex.Store({
   state: {
     user: null,
     posts: [],
+    userPosts: [],
     searchResults: [],
     loading: false,
     error: null,
@@ -28,6 +32,7 @@ export default new Vuex.Store({
     user: state => state.user,
     userFavorites: state => state.user && state.user.favorites,
     posts: state => state.posts,
+    userPosts: state => state.userPosts,
     searchResults: state => state.searchResults,
     loading: state => state.loading,
     error: state => state.error,
@@ -39,6 +44,9 @@ export default new Vuex.Store({
     },
     setPosts: (state, payload) => {
       state.posts = payload;
+    },
+    setUserPosts: (state, payload) => {
+      state.userPosts = payload;
     },
     setLoading: (state, payload) => {
       state.loading = payload;
@@ -93,6 +101,19 @@ export default new Vuex.Store({
           commit("setLoading", false);
           console.error(err);
         });
+    },
+
+    getUserPosts: ({ commit }, payload) => {
+      apolloClient
+        .query({
+          query: GET_USER_POSTS,
+          variables: payload
+        })
+        .then(({ data }) => {
+          // console.log(data.getUserPosts);
+          commit("setUserPosts", data.getUserPosts);
+        })
+        .catch(err => console.log(err));
     },
 
     addPost: ({ commit }, payload) => {
@@ -156,6 +177,48 @@ export default new Vuex.Store({
         .then(({ data }) => {
           // console.log(data.searchPosts);
           commit("setSearchResults", data.searchPosts);
+        })
+        .catch(err => console.log(err));
+    },
+
+    updateUserPost: ({ state, commit }, payload) => {
+      apolloClient
+        .mutate({
+          mutation: UPDATE_USER_POST,
+          variables: payload
+        })
+        .then(({ data }) => {
+          // console.log(state.userPosts);
+          // console.log(data.updateUserPost);
+
+          const index = state.userPosts.findIndex(post => post._id === data.updateUserPost._id);
+          const userPosts = [
+            ...state.userPosts.slice(0, index),
+            data.updateUserPost,
+            ...state.userPosts.slice(index + 1)
+          ];
+
+          commit("setUserPosts", userPosts);
+        })
+        .catch(err => console.log(err));
+    },
+
+    deleteUserPost: ({ state, commit }, payload) => {
+      apolloClient
+        .mutate({
+          mutation: DELETE_USER_POST,
+          variables: payload
+        })
+        .then(({ data }) => {
+          // console.log(data.deleteUserPost);
+
+          const index = state.userPosts.findIndex(post => post._id === data.deleteUserPost._id);
+          const userPosts = [
+            ...state.userPosts.slice(0, index),
+            ...state.userPosts.slice(index + 1)
+          ];
+
+          commit("setUserPosts", userPosts);
         })
         .catch(err => console.log(err));
     },

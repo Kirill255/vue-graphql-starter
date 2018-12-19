@@ -112,7 +112,8 @@ export default {
         "Travel",
         "Photography",
         "Technology",
-        "Food"
+        "Food",
+        "Furniture"
       ],
       titleRules: [
         title => !!title || "Title is required",
