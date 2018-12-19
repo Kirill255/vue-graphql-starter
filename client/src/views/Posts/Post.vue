@@ -12,7 +12,7 @@
           <v-card-title>
             <h1>{{getPost.title}}</h1>
             <v-btn v-if="user"
-                   @click="handleToggleLikePost"
+                   @click="debounceHandleToggleLikePost"
                    large
                    icon>
               <v-icon large
@@ -129,6 +129,7 @@
 </template>
 
 <script>
+import debounce from "lodash.debounce";
 import moment from "moment";
 import { mapGetters } from "vuex";
 import {
@@ -324,7 +325,10 @@ export default {
     },
     getTimeFromNow(time) {
       return moment(new Date(time)).fromNow();
-    }
+    },
+    debounceHandleToggleLikePost: debounce(function() {
+      this.handleToggleLikePost();
+    }, 300)
   }
 };
 </script>
