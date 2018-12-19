@@ -33,21 +33,28 @@ const PostSchema = new Schema({
     required: true,
     ref: "User"
   },
-  messages: [{
-    messageBody: {
-      type: String,
-      required: "Please supply a messageBody"
-    },
-    messageDate: {
-      type: Date,
-      default: Date.now
-    },
-    messageUser: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "User"
+  messages: [
+    {
+      messageBody: {
+        type: String,
+        required: "Please supply a messageBody"
+      },
+      messageDate: {
+        type: Date,
+        default: Date.now
+      },
+      messageUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "User"
+      }
     }
-  }]
+  ]
+});
+
+// create index to search on all fields of posts
+PostSchema.index({
+  "$**": "text"
 });
 
 module.exports = mongoose.model("Post", PostSchema);

@@ -77,12 +77,35 @@
       <v-spacer></v-spacer>
 
       <v-text-field prepend-icon="search"
+                    @input="handleSearchPosts"
+                    v-model="searchTerm"
                     box
                     hide-details
                     single-line
                     color="accent"
                     placeholder="Search posts"
                     clearable></v-text-field>
+
+      <!-- Search Results Card -->
+      <v-card v-if="searchResults.length"
+              dark
+              id="search__card">
+        <v-list>
+          <v-list-tile v-for="result in searchResults"
+                       :key="result._id"
+                       @click="goToSearchResult(result._id)">
+            <v-list-tile-title>
+              {{result.title}} -
+              <span class="font-weight-thin">{{formatDescription(result.description)}}</span>
+            </v-list-tile-title>
+
+            <!-- Show Icon if Result Favorited by User -->
+            <v-list-tile-action v-if="checkIfUserFavorite(result._id)">
+              <v-icon>favorite</v-icon>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
+      </v-card>
 
       <v-spacer></v-spacer>
 
@@ -168,7 +191,8 @@ export default {
       drawer: false,
       authSnackbar: false,
       authErrorSnackbar: false,
-      badgeAnimated: false
+      badgeAnimated: false,
+      searchTerm: ""
     };
   },
   watch: {
@@ -191,7 +215,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["user", "userFavorites", "authError"]),
+    ...mapGetters(["user", "userFavorites", "authError", "searchResults"]),
     navItems() {
       if (this.user) {
         return [
@@ -211,6 +235,28 @@ export default {
     },
     handleSignoutUser() {
       this.$store.dispatch("signoutUser");
+    },
+    handleSearchPosts() {
+      this.$store.dispatch("searchPosts", {
+        searchTerm: this.searchTerm
+      });
+    },
+    goToSearchResult(resultId) {
+      // Clear search term
+      this.searchTerm = "";
+      // Go to desired result
+      this.$router.push(`/posts/${resultId}`);
+      // Clear search results
+      this.$store.commit("clearSearchResults");
+    },
+    formatDescription(desc) {
+      return desc.length > 30 ? `${desc.slice(0, 30)}...` : desc;
+    },
+    checkIfUserFavorite(resultId) {
+      return (
+        this.userFavorites &&
+        this.userFavorites.some(fave => fave._id === resultId)
+      );
     }
   }
 };
@@ -230,6 +276,15 @@ export default {
 .fade-enter,
 .fade-leave-active {
   opacity: 0;
+}
+
+/* Search Results Card */
+#search__card {
+  position: absolute;
+  width: 100vw;
+  z-index: 8;
+  top: 100%;
+  left: 0%;
 }
 
 /* user favorite badge animation */
